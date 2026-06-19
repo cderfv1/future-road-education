@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>未来之路 · 教育路径模拟器</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 首页 -->
+    <section id="page-home" class="page active">
+      <div class="home-content">
+        <div class="home-badge">基于31省真实升学数据</div>
+        <h1 class="home-title">未来之路</h1>
+        <p class="home-subtitle">教育路径模拟器</p>
+        <p class="home-desc">帮助家长和学生预测教育路径与未来社会阶层的互动工具</p>
+        <button class="btn-primary btn-start" onclick="app.goToPage('input')">开始模拟</button>
+        <div class="home-links">
+          <a href="#" onclick="app.showDisclaimer(); return false;">数据来源与免责声明</a>
+        </div>
+      </div>
+      <footer class="page-footer">
+        数据来源：各省教育考试院、中国薪酬网、麦可思研究院。数据仅供参考，实际发展受多重因素影响。
+      </footer>
+    </section>
+
+    <!-- 输入页 -->
+    <section id="page-input" class="page">
+      <div class="input-header">
+        <button class="btn-back" onclick="app.goBack()">← 返回</button>
+        <div class="step-indicator" id="step-indicator">
+          <span class="step-dot active" data-step="1"></span>
+          <span class="step-dot" data-step="2"></span>
+          <span class="step-dot" data-step="3"></span>
+          <span class="step-dot" data-step="4"></span>
+        </div>
+      </div>
+
+      <!-- 步骤1：省份+年级 -->
+      <div class="step-content active" data-step="1">
+        <h2 class="step-title">您所在的省份和年级？</h2>
+        <p class="step-desc">不同省份的升学率差异显著，不同阶段的升学路径预测逻辑也有所不同。</p>
+        <div class="province-select-wrapper">
+          <select id="province-select" class="province-select">
+            <option value="">请选择省份</option>
+          </select>
+        </div>
+        <div class="grade-section-label">选择当前年级</div>
+        <div class="grade-cards" id="grade-cards"></div>
+        <button class="btn-primary btn-next" onclick="app.nextStep()" disabled>下一步</button>
+      </div>
+
+      <!-- 步骤2：学校等级 -->
+      <div class="step-content" data-step="2">
+        <h2 class="step-title" id="school-step-title">您所在学校的等级？</h2>
+        <p class="step-desc" id="school-step-desc">学校等级直接影响升学竞争力，请如实选择。</p>
+        <div class="school-cards" id="school-cards"></div>
+        <button class="btn-primary btn-next" onclick="app.nextStep()" disabled>下一步</button>
+      </div>
+
+      <!-- 步骤3：年级排名 -->
+      <div class="step-content" data-step="3">
+        <h2 class="step-title">您的年级排名大致在？</h2>
+        <p class="step-desc">排名越靠前，获得优质教育资源的机会越大。</p>
+        <div class="rank-input-wrapper">
+          <div class="rank-input-group">
+            <label class="rank-input-label">年级总人数</label>
+            <input type="number" id="rank-total" class="rank-input" placeholder="例如 500" min="1" inputmode="numeric">
+          </div>
+          <div class="rank-input-group">
+            <label class="rank-input-label">您的排名</label>
+            <input type="number" id="rank-position" class="rank-input" placeholder="例如 50" min="1" inputmode="numeric">
+          </div>
+          <div class="rank-result" id="rank-result" style="display:none;">
+            <div class="rank-percent" id="rank-percent">—</div>
+            <div class="rank-hint" id="rank-hint">请填写总人数和排名</div>
+          </div>
+        </div>
+        <button class="btn-primary btn-next" id="rank-next-btn" onclick="app.nextStep()" disabled>下一步</button>
+      </div>
+
+      <!-- 步骤4：高中等级选择（仅初中生考上高中时显示） -->
+      <div class="step-content" data-step="hs-level">
+        <h2 class="step-title">预计能上的高中等级？</h2>
+        <p class="step-desc">根据当前成绩，您可能考入以下高中，请选择最可能的一种。</p>
+        <div class="school-cards" id="hs-level-cards"></div>
+        <button class="btn-primary btn-next" onclick="app.nextStep()" disabled>下一步</button>
+      </div>
+
+      <!-- 步骤4/5：专业方向 -->
+      <div class="step-content" data-step="major">
+        <h2 class="step-title">感兴趣的专业方向？</h2>
+        <p class="step-desc">选择专业将影响未来收入预期，可多选或选"暂不确定"。</p>
+        <div class="major-grid" id="major-grid"></div>
+        <button class="btn-primary btn-next" onclick="app.finishInput()">查看结果</button>
+      </div>
+
+      <footer class="page-footer">
+        数据来源：各省教育考试院、中国薪酬网、麦可思研究院。数据仅供参考，实际发展受多重因素影响。
+      </footer>
+    </section>
+
+    <!-- 结果页 -->
+    <section id="page-result" class="page">
+      <div class="result-header">
+        <button class="btn-back" onclick="app.goToPage('home')">← 返回首页</button>
+      </div>
+      <div class="result-content">
+        <h2 class="result-title" id="result-main-title">您的教育路径预测</h2>
+
+        <!-- 高中预测提示（初中及以下路径） -->
+        <div class="highschool-info" id="highschool-info" style="display:none;"></div>
+
+        <!-- 核心数据卡片 -->
+        <div class="result-cards" id="result-cards-container">
+          <div class="result-card" id="result-card-tier">
+            <div class="result-card-label" id="result-tier-label">预测大学档次</div>
+            <div class="result-card-value" id="result-tier">—</div>
+          </div>
+          <div class="result-card">
+            <div class="result-card-label">毕业起薪（月薪）</div>
+            <div class="result-card-value" id="result-salary">—</div>
+          </div>
+          <div class="result-card">
+            <div class="result-card-label">社会阶层定位</div>
+            <div class="result-card-value" id="result-class">—</div>
+          </div>
+        </div>
+
+        <!-- 备选路径（初中及以下未上高中） -->
+        <div class="alt-paths" id="alt-paths" style="display:none;">
+          <h3 class="section-title">备选发展路径</h3>
+          <div class="alt-path-card" id="alt-path-1"></div>
+          <div class="alt-path-card" id="alt-path-2"></div>
+        </div>
+
+        <div class="pyramid-section">
+          <h3 class="section-title">社会阶层金字塔</h3>
+          <img id="pyramid-img" class="pyramid-img" src="img/pyramid.jpg" alt="社会阶层金字塔">
+        </div>
+
+        <div class="career-section">
+          <h3 class="section-title">典型职业与生活方式</h3>
+          <p class="career-text" id="career-text">—</p>
+        </div>
+
+        <div class="ceiling-section">
+          <h3 class="section-title">奋斗上限（10-15年后）</h3>
+          <p class="ceiling-text" id="ceiling-text">—</p>
+        </div>
+
+        <div class="major-bonus-section" id="major-bonus-section" style="display:none;">
+          <h3 class="section-title">专业加权</h3>
+          <p class="major-bonus-text" id="major-bonus-text">—</p>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn-secondary" onclick="app.changeAssumption()">换个假设</button>
+          <button class="btn-primary" onclick="app.goToPage('input')">重新测试</button>
+          <button class="btn-share" onclick="app.share()">分享结果</button>
+        </div>
+      </div>
+      <footer class="page-footer">
+        数据来源：各省教育考试院、中国薪酬网、麦可思研究院。数据仅供参考，实际发展受多重因素影响。
+      </footer>
+    </section>
+
+    <!-- 免责声明页 -->
+    <section id="page-disclaimer" class="page">
+      <div class="disclaimer-header">
+        <button class="btn-back" onclick="app.closeDisclaimer()">← 返回</button>
+      </div>
+      <div class="disclaimer-content">
+        <h2 class="disclaimer-title">免责声明</h2>
+        <div class="disclaimer-text">
+          <p>本模拟所使用数据来源于各省教育考试院历年高考录取数据、中国薪酬网《全国高校毕业生薪酬排行榜》、麦可思研究院《中国本科生就业报告》等公开渠道。</p>
+          <p>以上数据基于历史统计，仅反映宏观规律，不构成任何升学或职业规划建议。每个人的实际发展受个人努力、机遇把握、行业周期、地域差异等多重因素影响，请理性参考。</p>
+        </div>
+        <h3 class="disclaimer-subtitle">数据来源说明</h3>
+        <div class="disclaimer-text">
+          <p><strong>各省升学率：</strong>基于各省教育考试院公布的历年高考录取统计数据，涵盖31个省级行政区。</p>
+          <p><strong>学校等级加成系数：</strong>综合多省示范高中评估标准及高考升学表现数据整理。</p>
+          <p><strong>教育路径→阶层映射：</strong>参考中国薪酬网、麦可思研究院等机构的就业与薪酬研究报告。</p>
+          <p><strong>专业收入加权系数：</strong>基于麦可思研究院《中国本科生就业报告》各专业薪酬数据整理。</p>
+        </div>
+      </div>
+      <footer class="page-footer">
+        数据来源：各省教育考试院、中国薪酬网、麦可思研究院。数据仅供参考，实际发展受多重因素影响。
+      </footer>
+    </section>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

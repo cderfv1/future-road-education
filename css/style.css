@@ -1,0 +1,719 @@
+/* ============================================
+   未来之路 · 教育路径模拟器 — 样式层
+   ============================================ */
+
+:root {
+  --primary: #4F46E5;
+  --primary-dark: #4338CA;
+  --secondary: #F59E0B;
+  --bg: #F8FAFC;
+  --card-bg: #FFFFFF;
+  --text-title: #1E293B;
+  --text-body: #475569;
+  --text-muted: #94A3B8;
+  --radius-card: 16px;
+  --radius-btn: 12px;
+  --shadow: 0 4px 16px rgba(0,0,0,0.06);
+  --shadow-hover: 0 8px 24px rgba(0,0,0,0.10);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* 页面容器 */
+.page {
+  display: none;
+  min-height: 100vh;
+  width: 100%;
+  max-width: 428px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+  animation: fadeIn 0.3s ease;
+}
+
+.page.active {
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 按钮通用 */
+.btn-primary, .btn-secondary, .btn-share, .btn-back {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  min-height: 48px;
+  min-width: 44px;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border-radius: var(--radius-btn);
+  padding: 14px 32px;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+}
+
+.btn-primary:hover {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  background: #CBD5E1;
+  box-shadow: none;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: #fff;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-btn);
+  padding: 12px 24px;
+  flex: 1;
+}
+
+.btn-share {
+  background: var(--secondary);
+  color: #fff;
+  border-radius: var(--radius-btn);
+  padding: 12px 24px;
+  flex: 1;
+}
+
+.btn-back {
+  background: transparent;
+  color: var(--text-body);
+  font-size: 15px;
+  padding: 8px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 首页 */
+.home-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.home-badge {
+  background: rgba(79,70,229,0.08);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 24px;
+}
+
+.home-title {
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--text-title);
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.home-subtitle {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--primary);
+  margin-bottom: 16px;
+}
+
+.home-desc {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 280px;
+  margin-bottom: 40px;
+}
+
+.btn-start {
+  max-width: 280px;
+  margin-bottom: 24px;
+}
+
+.home-links a {
+  color: var(--text-muted);
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+/* 输入页头部 */
+.input-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.step-indicator {
+  display: flex;
+  gap: 8px;
+}
+
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #E2E8F0;
+  transition: all 0.3s ease;
+}
+
+.step-dot.active {
+  background: var(--primary);
+  width: 24px;
+  border-radius: 4px;
+}
+
+/* 步骤内容 */
+.step-content {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  padding: 16px 20px 24px;
+}
+
+.step-content.active {
+  display: flex;
+}
+
+.step-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-title);
+  margin-bottom: 8px;
+}
+
+.step-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+.btn-next {
+  margin-top: auto;
+}
+
+/* 省份选择 */
+.province-select-wrapper {
+  margin-bottom: 24px;
+}
+
+.province-select {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  border: 2px solid #E2E8F0;
+  border-radius: var(--radius-btn);
+  background: var(--card-bg);
+  color: var(--text-title);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 20px;
+}
+
+.province-select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* 年级区域标签 */
+.grade-section-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-title);
+  margin-bottom: 12px;
+}
+
+/* 年级卡片 */
+.grade-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.grade-card {
+  background: var(--card-bg);
+  border: 2px solid transparent;
+  border-radius: var(--radius-card);
+  padding: 18px 20px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.grade-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.grade-card.selected {
+  border-color: var(--primary);
+  background: rgba(79,70,229,0.04);
+}
+
+.grade-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-title);
+}
+
+.grade-card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* 学校等级卡片 */
+.school-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.school-card {
+  background: var(--card-bg);
+  border: 2px solid transparent;
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.school-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.school-card.selected {
+  border-color: var(--primary);
+  background: rgba(79,70,229,0.04);
+}
+
+.school-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-title);
+  margin-bottom: 6px;
+}
+
+.school-card-factor {
+  font-size: 14px;
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.school-card-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* 排名输入框 */
+.rank-input-wrapper {
+  background: var(--card-bg);
+  border-radius: var(--radius-card);
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+}
+
+.rank-input-group {
+  margin-bottom: 20px;
+}
+
+.rank-input-group:last-of-type {
+  margin-bottom: 0;
+}
+
+.rank-input-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-title);
+  margin-bottom: 8px;
+}
+
+.rank-input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 18px;
+  font-weight: 600;
+  border: 2px solid #E2E8F0;
+  border-radius: var(--radius-btn);
+  background: var(--bg);
+  color: var(--text-title);
+  font-family: inherit;
+  transition: border-color 0.2s ease;
+}
+
+.rank-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.rank-input::placeholder {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 15px;
+}
+
+/* 排名结果 */
+.rank-result {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #E2E8F0;
+  text-align: center;
+}
+
+.rank-percent {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.rank-hint {
+  font-size: 15px;
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+/* 专业九宫格 */
+.major-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.major-card {
+  background: var(--card-bg);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 14px 8px;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+  min-height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.major-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.major-card.selected {
+  border-color: var(--primary);
+  background: rgba(79,70,229,0.06);
+}
+
+.major-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-title);
+  margin-bottom: 4px;
+  line-height: 1.3;
+}
+
+.major-card-examples {
+  font-size: 11px;
+  color: var(--text-muted);
+  line-height: 1.3;
+}
+
+/* 结果页 */
+.result-header {
+  padding: 16px 20px;
+}
+
+.result-content {
+  flex: 1;
+  padding: 0 20px 24px;
+}
+
+.result-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-title);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* 高中信息提示 */
+.highschool-info {
+  margin-bottom: 20px;
+}
+
+.highschool-warning, .highschool-success {
+  background: var(--card-bg);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.highschool-warning {
+  border-left: 4px solid var(--secondary);
+}
+
+.highschool-success {
+  border-left: 4px solid #10B981;
+}
+
+.warning-icon, .success-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.warning-text, .success-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-body);
+}
+
+.warning-text strong, .success-text strong {
+  color: var(--text-title);
+}
+
+/* 结果卡片 */
+.result-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.result-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.result-card-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.result-card-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+/* 备选路径 */
+.alt-paths {
+  margin-bottom: 28px;
+}
+
+.alt-path-card {
+  background: var(--card-bg);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 12px;
+}
+
+.alt-path-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.alt-path-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-title);
+}
+
+.alt-path-salary {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.alt-path-class {
+  font-size: 14px;
+  color: var(--secondary);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.alt-path-career {
+  font-size: 13px;
+  color: var(--text-body);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.alt-path-ceiling {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  padding-top: 10px;
+  border-top: 1px solid #E2E8F0;
+}
+
+/* 金字塔图片 */
+.pyramid-section {
+  margin-bottom: 28px;
+}
+
+.section-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-title);
+  margin-bottom: 16px;
+}
+
+.pyramid-img {
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  display: block;
+}
+
+/* 职业与奋斗上限 */
+.career-section, .ceiling-section, .major-bonus-section {
+  background: var(--card-bg);
+  border-radius: var(--radius-card);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+
+.career-text, .ceiling-text, .major-bonus-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text-body);
+}
+
+/* 结果页操作按钮 */
+.result-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+/* 免责声明页 */
+.disclaimer-header {
+  padding: 16px 20px;
+}
+
+.disclaimer-content {
+  flex: 1;
+  padding: 0 20px 24px;
+}
+
+.disclaimer-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-title);
+  margin-bottom: 20px;
+}
+
+.disclaimer-subtitle {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-title);
+  margin: 24px 0 12px;
+}
+
+.disclaimer-text p {
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--text-body);
+  margin-bottom: 12px;
+}
+
+.disclaimer-text strong {
+  color: var(--text-title);
+  font-weight: 600;
+}
+
+/* 页脚 */
+.page-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 428px;
+  margin: 0 auto;
+  background: rgba(248,250,252,0.95);
+  backdrop-filter: blur(8px);
+  padding: 12px 20px;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+  border-top: 1px solid rgba(0,0,0,0.04);
+  z-index: 100;
+}
+
+/* 响应式适配 */
+@media (max-width: 374px) {
+  .home-title { font-size: 34px; }
+  .rank-percent { font-size: 40px; }
+  .major-grid { grid-template-columns: repeat(2, 1fr); }
+  .result-actions { flex-direction: column; }
+}
+
+@media (min-width: 429px) {
+  body {
+    background: #E2E8F0;
+  }
+  .page {
+    background: var(--bg);
+    min-height: 100vh;
+  }
+}
