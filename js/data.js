@@ -39,59 +39,166 @@ const DATA = {
     { name: "西藏", highSchoolRate: 0.408163, examCandidates: 3.30, bachelorEnrolled: 1.22, bachelorRate: 0.370, firstTierRate: 0.121, rate985: 0.006, rate211: 0.024 }
   ],
 
-  // 年级选项
-  grades: [
-    { name: "小学", type: "junior", desc: "小学阶段，关注初中升学" },
-    { name: "初一", type: "junior", desc: "初中起始阶段" },
-    { name: "初二", type: "junior", desc: "初中关键期" },
-    { name: "初三", type: "junior", desc: "即将面临中考" },
-    { name: "高一", type: "senior", desc: "高中起始阶段" },
-    { name: "高二", type: "senior", desc: "高中关键期" },
-    { name: "高三", type: "senior", desc: "即将面临高考" }
-  ],
-
-  // Sheet2: 学校等级加成系数（高中阶段使用）
-  schoolLevels: [
-    { name: "省级示范/顶尖市重点", minFactor: 1.6, maxFactor: 2.2, desc: "垄断985/211名额，一本率90%+" },
-    { name: "普通市重点", minFactor: 1.3, maxFactor: 1.6, desc: "一本率60%-85%" },
-    { name: "优质区重点", minFactor: 1.1, maxFactor: 1.3, desc: "一本率40%-65%" },
-    { name: "普通区重点", minFactor: 0.9, maxFactor: 1.1, desc: "一本率20%-40%" },
-    { name: "普通高中", minFactor: 0.5, maxFactor: 0.8, desc: "一本率不足20%" }
-  ],
-
-  // 初中学校等级加成系数（初中阶段使用，最后一项改为"普通初中"）
+  // 初中学校等级（仅保留名称，用于卡片展示和映射表索引）
   juniorSchoolLevels: [
-    { name: "省级示范/顶尖市重点", minFactor: 1.6, maxFactor: 2.2, desc: "垄断优质高中名额，升学率90%+" },
-    { name: "普通市重点", minFactor: 1.3, maxFactor: 1.6, desc: "升学率60%-85%" },
-    { name: "优质区重点", minFactor: 1.1, maxFactor: 1.3, desc: "升学率40%-65%" },
-    { name: "普通区重点", minFactor: 0.9, maxFactor: 1.1, desc: "升学率20%-40%" },
-    { name: "普通初中", minFactor: 0.5, maxFactor: 0.8, desc: "升学率不足20%" }
+    { name: '市重点初中', desc: '优质初中，升学竞争力强' },
+    { name: '区重点初中', desc: '区级重点，升学竞争力中等偏上' },
+    { name: '普通初中', desc: '普通初中，升学竞争力一般' }
   ],
 
-  // 高中类型映射（概率 → 高中等级，用于初中生考上高中后的选择）
-  highSchoolTierMapping: [
-    { threshold: 0.80, name: "省级示范/顶尖市重点", desc: "优质高中，升学率领先" },
-    { threshold: 0.60, name: "普通市重点", desc: "市重点高中，教学质量优良" },
-    { threshold: 0.40, name: "区重点", desc: "区重点高中，有一定竞争力" },
-    { threshold: 0.20, name: "普通高中", desc: "普通高中，需更加努力" }
+  // 高中学校等级（仅保留名称，用于卡片展示和映射表索引）
+  seniorSchoolLevels: [
+    { name: '省级示范/顶尖市重点', desc: '顶尖高中，升学竞争力极强' },
+    { name: '普通市重点', desc: '市级重点，升学竞争力较强' },
+    { name: '区重点', desc: '区级重点，升学竞争力中等' },
+    { name: '普通高中', desc: '普通高中，升学竞争力一般' }
   ],
 
-  // Sheet3: 教育路径 → 社会阶层与未来发展
-  pathMapping: [
-    { path: "未完成义务教育", startSalary: 2500, classLevel: "第9层（底层）", career: "零散工、务农、低保户，收入极低且不稳定，缺乏社会保障", ceiling: "第8-9层 — 极少数通过技能培训或创业升至第8层，多数长期处于底层，年收入3-5万" },
-    { path: "初中毕业即就业", startSalary: 3000, classLevel: "第8层（底层边缘）", career: "服务员、快递员、工厂普工、建筑小工，工作强度大，收入低，晋升空间极小", ceiling: "第7-8层 — 少数通过技能积累或小本创业升至第7层（如小个体户、包工头），多数维持底层收入，年收入4-8万" },
-    { path: "高中毕业即就业", startSalary: 3500, classLevel: "第7层（下层）", career: "销售、客服、司机、小型维修工，收入略高于初中毕业生，但缺乏专业技能", ceiling: "第6-7层 — 部分通过技能提升和经验积累升至销售主管、技术工人等，年收入6-15万" },
-    { path: "中职/中专毕业", startSalary: 4000, classLevel: "第7层（下层）", career: "初级技工、幼师、护士助理、文员，具备基础职业技能，就业相对稳定", ceiling: "第6-7层 — 技术熟练者可升至高级技工或基层管理，年收入6-18万" },
-    { path: "技校毕业", startSalary: 4500, classLevel: "第6层（中下阶层）", career: "技术工人、电工、焊工、厨师，拥有一技之长，收入中等偏下", ceiling: "第6层 — 高级技师或技术管理岗，年收入10-25万，顶尖者超50万" },
-    { path: "高职/大专毕业", startSalary: 5000, classLevel: "第6层（中下阶层）", career: "技术员、初级工程师、行政专员、销售代表，具备一定专业基础", ceiling: "第5-6层 — 技术骨干或中层管理，年收入10-20万" },
-    { path: "二本/民办本科", startSalary: 5500, classLevel: "第6层（中下阶层）", career: "普通白领、初级工程师、中小学教师、基层公务员，学历门槛达标，竞争激烈", ceiling: "第6-7层 — 少数进入管理岗，多数维持工薪阶层，年收入6-15万" },
-    { path: "普通一本", startSalary: 7000, classLevel: "第5层（中层）", career: "工程师、教师、医生、中层公务员，具备较强专业能力和学历优势", ceiling: "第5-6层 — 少数晋升中层管理，多数稳定在技术或行政岗位，年收入10-25万" },
-    { path: "\"双一流\"院校", startSalary: 9000, classLevel: "第5层（中层）", career: "优质企业核心岗位、重点中学教师、三甲医院医生、科研院所", ceiling: "第5层 — 年收入15-35万" },
-    { path: "211院校", startSalary: 10000, classLevel: "第5层（中层）", career: "名企管培生、金融机构、互联网大厂、科研机构，具备较强竞争力", ceiling: "第5层（中层） — 多数稳定在中层岗位，年收入15-40万" },
-    { path: "普通985", startSalary: 12000, classLevel: "第4-5层（中上层）", career: "头部企业核心岗、高校教职、科研院所、公务员选调生，学历优势明显", ceiling: "第4-5层 — 部分晋升管理岗，年收入20-60万" },
-    { path: "C9/顶尖985", startSalary: 15000, classLevel: "第4层（中上层/精英中产）", career: "顶尖企业、投行、咨询、头部互联网、科研机构核心岗位", ceiling: "第4层（中上层/精英中产） — 多数成长为部门负责人、技术专家，年收入30-80万" },
-    { path: "清北", startSalary: 20000, classLevel: "第3-4层（上层中产/新贵阶层）", career: "顶级投行、咨询公司、互联网高管、科研院所领军人才、创业", ceiling: "第3-4层（上层中产/新贵阶层） — 部分进入高管层、创业成功或成为行业专家，年收入50-200万" }
+  // ============================================
+  // 排名区间映射表（核心算法数据）
+  // 结构：校内排名百分比 → [省排名下限%, 省排名上限%]
+  // ============================================
+
+  // 高中阶段映射表（按 seniorSchoolLevels 索引对应）
+  seniorRankMapping: {
+    '省级示范/顶尖市重点': [
+      { rank: 1,  low: 0.3,  high: 0.8 },
+      { rank: 3,  low: 1.0,  high: 2.5 },
+      { rank: 5,  low: 2.0,  high: 4.0 },
+      { rank: 10, low: 5.0,  high: 8.0 },
+      { rank: 20, low: 12.0, high: 18.0 },
+      { rank: 30, low: 20.0, high: 28.0 },
+      { rank: 50, low: 38.0, high: 48.0 },
+      { rank: 70, low: 60.0, high: 68.0 },
+      { rank: 90, low: 85.0, high: 88.0 }
+    ],
+    '普通市重点': [
+      { rank: 1,  low: 0.8,  high: 1.5 },
+      { rank: 3,  low: 2.5,  high: 4.5 },
+      { rank: 5,  low: 4.0,  high: 7.0 },
+      { rank: 10, low: 9.0,  high: 14.0 },
+      { rank: 20, low: 18.0, high: 26.0 },
+      { rank: 30, low: 28.0, high: 36.0 },
+      { rank: 50, low: 48.0, high: 56.0 },
+      { rank: 70, low: 68.0, high: 74.0 },
+      { rank: 90, low: 88.0, high: 90.0 }
+    ],
+    '区重点': [
+      { rank: 1,  low: 1.5,  high: 3.0 },
+      { rank: 3,  low: 4.5,  high: 8.0 },
+      { rank: 5,  low: 7.0,  high: 12.0 },
+      { rank: 10, low: 14.0, high: 22.0 },
+      { rank: 20, low: 26.0, high: 38.0 },
+      { rank: 30, low: 36.0, high: 50.0 },
+      { rank: 50, low: 56.0, high: 68.0 },
+      { rank: 70, low: 74.0, high: 82.0 },
+      { rank: 90, low: 90.0, high: 94.0 }
+    ],
+    '普通高中': [
+      { rank: 1,  low: 6.0,  high: 10.0 },
+      { rank: 3,  low: 10.0, high: 18.0 },
+      { rank: 5,  low: 16.0, high: 26.0 },
+      { rank: 10, low: 26.0, high: 38.0 },
+      { rank: 20, low: 38.0, high: 52.0 },
+      { rank: 30, low: 50.0, high: 62.0 },
+      { rank: 50, low: 68.0, high: 78.0 },
+      { rank: 70, low: 82.0, high: 88.0 },
+      { rank: 90, low: 94.0, high: 97.0 }
+    ]
+  },
+
+  // 初中阶段映射表（按 juniorSchoolLevels 索引对应）
+  juniorRankMapping: {
+    '市重点初中': [
+      { rank: 1,  low: 0.8,  high: 1.5 },
+      { rank: 3,  low: 2.5,  high: 4.5 },
+      { rank: 5,  low: 4.0,  high: 7.0 },
+      { rank: 10, low: 9.0,  high: 14.0 },
+      { rank: 20, low: 18.0, high: 26.0 },
+      { rank: 30, low: 28.0, high: 36.0 },
+      { rank: 50, low: 48.0, high: 56.0 },
+      { rank: 70, low: 68.0, high: 74.0 }
+    ],
+    '区重点初中': [
+      { rank: 1,  low: 1.0,  high: 2.0 },
+      { rank: 3,  low: 3.0,  high: 5.5 },
+      { rank: 5,  low: 5.0,  high: 8.5 },
+      { rank: 10, low: 10.0, high: 16.0 },
+      { rank: 20, low: 20.0, high: 30.0 },
+      { rank: 30, low: 30.0, high: 42.0 },
+      { rank: 50, low: 50.0, high: 62.0 },
+      { rank: 70, low: 70.0, high: 78.0 }
+    ],
+    '普通初中': [
+      { rank: 1,  low: 1.5,  high: 3.0 },
+      { rank: 3,  low: 4.5,  high: 8.0 },
+      { rank: 5,  low: 7.0,  high: 12.0 },
+      { rank: 10, low: 13.0, high: 20.0 },
+      { rank: 20, low: 24.0, high: 34.0 },
+      { rank: 30, low: 34.0, high: 48.0 },
+      { rank: 50, low: 56.0, high: 68.0 },
+      { rank: 70, low: 74.0, high: 82.0 }
+    ]
+  },
+
+  // 高中等级推测比例（初中→高中预测用）
+  highSchoolTierPrediction: [
+    { name: '省级示范/顶尖市重点', maxRatio: 0.10, desc: '省重点高中' },
+    { name: '普通市重点', maxRatio: 0.30, desc: '市重点高中' },
+    { name: '区重点', maxRatio: 0.60, desc: '区重点高中' },
+    { name: '普通高中', maxRatio: 1.00, desc: '普通高中' }
   ],
+
+  // 大学档次判定（从高到低）
+  universityTiers: [
+    { key: 'rate985', name: '985院校', pathName: '普通985' },
+    { key: 'rate211', name: '211院校', pathName: '211院校' },
+    { key: 'firstTierRate', name: '一本院校', pathName: '普通一本' },
+    { key: 'bachelorRate', name: '本科院校', pathName: '二本/民办本科' },
+    { key: 'highSchoolRate', name: '大专', pathName: '高职/大专毕业' }
+  ],
+
+  // Sheet3: 2026年中国毕业生社会阶层与生存状态矩阵
+  // 城市能级 × 学历层次 × 就业赛道 → 社会阶层与生存状态
+  societyData: {
+    matrix: [
+      // ===== 一线城市（北上广深）=====
+      { cityLevel: "一线", education: "二本/民办/大专", track: "体制外", startSalary: "4500-6500", age35Status: "频繁换工作，月薪8k-1.2w，随时面临35岁优化，生存焦虑感极强", housingStatus: "长期租房或远离市区的老破小（合租）", classLevel: "城市边缘漂族（底层中产预备）", entryTier: "第8层", ceilingTier: null, breakthroughProbability: "极低（<5%）", breakthroughPath: "转行销售爆单或赶上直播风口" },
+      { cityLevel: "一线", education: "二本/民办/大专", track: "体制内", startSalary: "6000-8000", age35Status: "月薪1-1.5w，工作稳定但晋升缓慢，社交圈局限于体制内基层", housingStatus: "排队申请共有产权房或公租房，勉强立足", classLevel: "稳定型城市平民", entryTier: "第6层", ceilingTier: null, breakthroughProbability: "较低", breakthroughPath: "靠工龄和职级并行熬到副科" },
+      { cityLevel: "一线", education: "普通一本/211", track: "体制外", startSalary: "10000-18000", age35Status: "月薪2.5w-4w，面临严重年龄焦虑，拼体力内卷，存款较多但不敢辞职", housingStatus: "凑齐6个钱包付首付，背负高额房贷（月供1.5w+）", classLevel: "高负债中产", entryTier: "第5层", ceilingTier: null, breakthroughProbability: "中等", breakthroughPath: "跳槽到独角兽或晋升中层管理（总监级）" },
+      { cityLevel: "一线", education: "普通一本/211", track: "体制内", startSalary: "8000-12000", age35Status: "月薪2-3w（含公积金绩效），社会资源丰富，孩子入学无忧，受人尊敬", housingStatus: "靠体制内低息贷款和分房政策，置换市区商品房", classLevel: "权力关联型中产", entryTier: "第5层", ceilingTier: "第4层", breakthroughProbability: "较高", breakthroughPath: "处级干部或高级职称后，可触达第4层" },
+      { cityLevel: "一线", education: "985/C9/清北", track: "体制外", startSalary: "25000-45000", age35Status: "年薪60-100w，但高强度透支，35岁面临'毕业'风险，需提前布局被动收入", housingStatus: "贷款买核心区千万房产，或全款买郊区", classLevel: "高薪焦虑精英", entryTier: "第4层", ceilingTier: null, breakthroughProbability: "较高", breakthroughPath: "成为高管或技术合伙人进入第4层" },
+      { cityLevel: "一线", education: "985/C9/清北", track: "体制内", startSalary: "10000-15000", age35Status: "副处/正科级，掌握审批权或核心资源，政治前景广阔", housingStatus: "配租/配售政策性住房，或低息购买", classLevel: "政治新星预备役", entryTier: "第5层", ceilingTier: "第3层", breakthroughProbability: "极高（非线性）", breakthroughPath: "仕途顺利可跨越多个阶层" },
+      // ===== 二线城市（省会/新一线）=====
+      { cityLevel: "二线", education: "二本/民办/大专", track: "体制外", startSalary: "4000-5500", age35Status: "月薪6k-8k，勉强温饱，已婚已育后经济压力巨大", housingStatus: "租房，或靠父母在郊区付首付", classLevel: "城市奋斗底层", entryTier: "第7层", ceilingTier: null, breakthroughProbability: "低", breakthroughPath: "做小生意或成为金牌销售" },
+      { cityLevel: "二线", education: "二本/民办/大专", track: "体制内", startSalary: "5000-6500", age35Status: "月薪8k-1.2w，本地人眼中的'好工作'，相亲市场硬通货", housingStatus: "公积金覆盖房贷，购买市区普通商品房", classLevel: "地方安逸中产", entryTier: "第6层", ceilingTier: null, breakthroughProbability: "中等偏上", breakthroughPath: "熬资历成为中层领导" },
+      { cityLevel: "二线", education: "普通一本/211", track: "体制外", startSalary: "8000-12000", age35Status: "月薪1.5-2.5w，工作稳定（国企）或内卷（大厂分部），买车自由", housingStatus: "工作5-8年置换核心区100平以上改善房", classLevel: "城市核心中产", entryTier: "第5层", ceilingTier: null, breakthroughProbability: "中等", breakthroughPath: "成为区域负责人或技术专家" },
+      { cityLevel: "二线", education: "普通一本/211", track: "体制内", startSalary: "7000-9000", age35Status: "月薪1.5-2w，掌握本地医疗/教育资源，社会地位高，隐形福利多", housingStatus: "单位团购房或低价集资房，多套房持有者", classLevel: "地方实力派", entryTier: "第5层", ceilingTier: "第4层", breakthroughProbability: "高", breakthroughPath: "实权处级或科室主任后，在本地可呼风唤雨" },
+      { cityLevel: "二线", education: "985/C9/清北", track: "体制外", startSalary: "15000-25000", age35Status: "月薪3-5w，成为公司中层骨干，在本城市属于高收入人群", housingStatus: "全款或极少贷款购买高端住宅", classLevel: "城市精英阶层", entryTier: "第4层", ceilingTier: null, breakthroughProbability: "较高", breakthroughPath: "创业成功或晋升大区总裁" },
+      { cityLevel: "二线", education: "985/C9/清北", track: "体制内", startSalary: "8000-12000", age35Status: "副科/正科级，省级机关或市直部门核心岗位，发展空间大，是各省定向选调生的重点培养对象", housingStatus: "单位团购或人才公寓，低息贷款购房", classLevel: "政治新秀/地方精英预备役", entryTier: "第5层", ceilingTier: "第4层", breakthroughProbability: "高", breakthroughPath: "选调生通道，晋升速度快，有望成为厅级后备" },
+      // ===== 三四线城市及县城 =====
+      { cityLevel: "三四线", education: "二本/民办/大专", track: "体制外", startSalary: "3000-4500", age35Status: "月薪4-6k，生活节奏慢，但收入增长乏力，抗风险能力差", housingStatus: "父母留房或购买总价极低的楼梯房", classLevel: "县城边缘平民", entryTier: "第7层", ceilingTier: null, breakthroughProbability: "极低", breakthroughPath: "仅能维持生计" },
+      { cityLevel: "三四线", education: "二本/民办/大专", track: "体制内", startSalary: "4000-6000", age35Status: "月薪7k-1w（含绩效），公积金高，实际购买力极强，是县城人上人", housingStatus: "单位福利房或全款买大面积新房，有车有库", classLevel: "县城'婆罗门'/上层平民", entryTier: "第6层", ceilingTier: null, breakthroughProbability: "中等（显性）", breakthroughPath: "掌握实质权力和人情网，后代起点超过一线第5层" },
+      { cityLevel: "三四线", education: "普通一本/211", track: "体制内", startSalary: "5000-7000", age35Status: "35岁前大概率升至副科/实职股长或中级职称，成为当地有头有脸的人物", housingStatus: "多套无贷房产，甚至拥有宅基地", classLevel: "县城精英阶层", entryTier: "第5层", ceilingTier: "第4层", breakthroughProbability: "高", breakthroughPath: "在县域内属于顶尖存在" },
+      { cityLevel: "三四线", education: "普通一本/211", track: "体制外", startSalary: "3500-5000", age35Status: "月薪5-8k，本地中小企业中层或自主创业，生活成本低但收入增长有限", housingStatus: "父母留房或低首付购房，无房贷压力", classLevel: "县城中产/小城创业者", entryTier: "第6层", ceilingTier: null, breakthroughProbability: "低至中等", breakthroughPath: "创业成功或成为本地行业头部，可升至第5层" },
+      { cityLevel: "三四线", education: "985/C9/清北", track: "体制外", startSalary: "4000-6000", age35Status: "月薪6-10k，在本地属于高学历人才，但就业机会有限，多为自主创业或家族企业接班", housingStatus: "全款或低贷购买本地高端住宅，有车有房", classLevel: "小城精英/返乡创业人才", entryTier: "第6层", ceilingTier: null, breakthroughProbability: "低至中等", breakthroughPath: "利用一线经验和资源，在本地实现降维打击，成为行业头部" },
+      { cityLevel: "三四线", education: "985/C9/清北", track: "体制内", startSalary: "6000-8000", age35Status: "副科/正科级或中级职称，享受人才引进政策补贴，在当地属于重点培养对象", housingStatus: "人才公寓或低价团购房，公积金覆盖房贷", classLevel: "人才引进型县城精英", entryTier: "第5层", ceilingTier: "第4层", breakthroughProbability: "中等偏高", breakthroughPath: "凭借985身份在基层快速提拔，未来有望进入市级或省级机关" }
+    ],
+    cityLevels: {
+      first: ["北京", "上海", "广州", "深圳"],
+      second: ["成都", "杭州", "武汉", "南京", "重庆", "天津", "苏州", "西安", "郑州", "长沙", "合肥", "青岛", "济南", "福州", "厦门", "宁波", "无锡", "东莞", "佛山"],
+      third: ["其他城市及县城"]
+    },
+    educationMapping: {
+      "二本/民办/大专": ["二本/民办本科", "高职/大专毕业"],
+      "普通一本/211": ["普通一本", "211院校"],
+      "985/C9/清北": ["普通985", "C9/顶尖985", "清北"]
+    },
+    trackDefinition: {
+      "体制内": "公务员、事业单位、国企、教师、医生等有编制或体制内岗位",
+      "体制外": "私企、外企、创业、自由职业等市场化岗位"
+    }
+  },
 
   // Sheet4: 专业收入加权系数
   majors: [
@@ -106,19 +213,6 @@ const DATA = {
     { category: "管理类", examples: "工商管理、会计、信管", factor: 0.85, desc: "泛用性强但专业性弱" },
     { category: "教育学类", examples: "师范类、教育", factor: 0.75, desc: "各学科门类中薪资最低" },
     { category: "暂不确定", examples: "—", factor: 1.00, desc: "按该校平均水平计算" }
-  ],
-
-  // 阶层金字塔颜色（从下到上：第9层→第1层）
-  pyramidColors: [
-    "#1E293B", "#334155", "#475569", "#64748B", "#94A3B8",
-    "#CBD5E1", "#FCD34D", "#F59E0B", "#D97706"
-  ],
-
-  // 阶层标签
-  classLabels: [
-    "第1层：顶层精英", "第2层：上层富豪", "第3层：上层中产/新贵",
-    "第4层：中上层/精英中产", "第5层：中层", "第6层：中下阶层",
-    "第7层：下层", "第8层：底层边缘", "第9层：底层"
   ]
 };
 

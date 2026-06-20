@@ -29,47 +29,46 @@
     <section id="page-input" class="page">
       <div class="input-header">
         <button class="btn-back" onclick="app.goBack()">← 返回</button>
-        <div class="step-indicator" id="step-indicator">
-          <span class="step-dot active" data-step="1"></span>
-          <span class="step-dot" data-step="2"></span>
-          <span class="step-dot" data-step="3"></span>
-          <span class="step-dot" data-step="4"></span>
-        </div>
+        <div class="step-progress" id="step-progress">1 / 5</div>
       </div>
 
-      <!-- 步骤1：省份+年级 -->
+      <!-- 第1步：省份 + 学段 -->
       <div class="step-content active" data-step="1">
-        <h2 class="step-title">您所在的省份和年级？</h2>
-        <p class="step-desc">不同省份的升学率差异显著，不同阶段的升学路径预测逻辑也有所不同。</p>
+        <h2 class="step-title">您所在的省份和学段？</h2>
+        <p class="step-desc">不同省份的升学率差异显著，学段决定预测路径。</p>
         <div class="province-select-wrapper">
           <select id="province-select" class="province-select">
             <option value="">请选择省份</option>
           </select>
         </div>
-        <div class="grade-section-label">选择当前年级</div>
-        <div class="grade-cards" id="grade-cards"></div>
+        <div class="grade-section-label">选择当前学段</div>
+        <div class="stage-cards" id="stage-cards">
+          <div class="stage-card" data-stage="junior" onclick="app.selectStage('junior')">
+            <div class="stage-card-icon">📚</div>
+            <div class="stage-card-title">初中生</div>
+            <div class="stage-card-desc">预测中考→高中→大学路径</div>
+          </div>
+          <div class="stage-card" data-stage="senior" onclick="app.selectStage('senior')">
+            <div class="stage-card-icon">🎓</div>
+            <div class="stage-card-title">高中生</div>
+            <div class="stage-card-desc">预测高考→大学→就业路径</div>
+          </div>
+        </div>
         <button class="btn-primary btn-next" onclick="app.nextStep()" disabled>下一步</button>
       </div>
 
-      <!-- 步骤2：学校等级 -->
+      <!-- 第2步：学校等级 + 年级排名 -->
       <div class="step-content" data-step="2">
         <h2 class="step-title" id="school-step-title">您所在学校的等级？</h2>
         <p class="step-desc" id="school-step-desc">学校等级直接影响升学竞争力，请如实选择。</p>
         <div class="school-cards" id="school-cards"></div>
-        <button class="btn-primary btn-next" onclick="app.nextStep()" disabled>下一步</button>
-      </div>
-
-      <!-- 步骤3：年级排名 -->
-      <div class="step-content" data-step="3">
-        <h2 class="step-title">您的年级排名大致在？</h2>
-        <p class="step-desc">排名越靠前，获得优质教育资源的机会越大。</p>
         <div class="rank-input-wrapper">
           <div class="rank-input-group">
             <label class="rank-input-label">年级总人数</label>
             <input type="number" id="rank-total" class="rank-input" placeholder="例如 500" min="1" inputmode="numeric">
           </div>
           <div class="rank-input-group">
-            <label class="rank-input-label">您的排名</label>
+            <label class="rank-input-label">您是第几名</label>
             <input type="number" id="rank-position" class="rank-input" placeholder="例如 50" min="1" inputmode="numeric">
           </div>
           <div class="rank-result" id="rank-result" style="display:none;">
@@ -80,19 +79,43 @@
         <button class="btn-primary btn-next" id="rank-next-btn" onclick="app.nextStep()" disabled>下一步</button>
       </div>
 
-      <!-- 步骤4：高中等级选择（仅初中生考上高中时显示） -->
-      <div class="step-content" data-step="hs-level">
-        <h2 class="step-title">预计能上的高中等级？</h2>
-        <p class="step-desc">根据当前成绩，您可能考入以下高中，请选择最可能的一种。</p>
-        <div class="school-cards" id="hs-level-cards"></div>
-        <button class="btn-primary btn-next" onclick="app.nextStep()" disabled>下一步</button>
+      <!-- 第3步：初中→高中预测（仅初中生） -->
+      <div class="step-content" data-step="3-junior">
+        <h2 class="step-title">中考预测结果</h2>
+        <p class="step-desc">根据您的排名和所在地区，系统推测以下结果。</p>
+        <div id="junior-prediction-content"></div>
+        <button class="btn-primary btn-next" id="junior-next-btn" onclick="app.nextStep()" disabled>下一步</button>
       </div>
 
-      <!-- 步骤4/5：专业方向 -->
-      <div class="step-content" data-step="major">
+      <!-- 第3步：高中→大学预测（仅高中生） -->
+      <div class="step-content" data-step="3-senior">
+        <h2 class="step-title">高考预测结果</h2>
+        <p class="step-desc">根据您的排名和所在地区，系统推测以下结果。</p>
+        <div id="senior-prediction-content"></div>
+        <button class="btn-primary btn-next" onclick="app.nextStep()">下一步</button>
+      </div>
+
+      <!-- 第4步：选专业 + 赛道 -->
+      <div class="step-content" data-step="4">
         <h2 class="step-title">感兴趣的专业方向？</h2>
         <p class="step-desc">选择专业将影响未来收入预期，可多选或选"暂不确定"。</p>
         <div class="major-grid" id="major-grid"></div>
+
+        <h3 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px; color: var(--text-primary);">选择就业赛道</h3>
+        <p style="margin-bottom: 16px; font-size: 13px; color: var(--text-secondary);">体制内/体制外将显著影响未来社会阶层与生存状态</p>
+        <div class="track-cards">
+          <div class="track-card" data-track="体制内" onclick="app.selectTrack('体制内')">
+            <div class="track-card-icon">🏛️</div>
+            <div class="track-card-title">体制内</div>
+            <div class="track-card-desc">公务员、事业单位、国企、教师、医生等有编制或体制内岗位</div>
+          </div>
+          <div class="track-card selected" data-track="体制外" onclick="app.selectTrack('体制外')">
+            <div class="track-card-icon">💼</div>
+            <div class="track-card-title">体制外</div>
+            <div class="track-card-desc">私企、外企、创业、自由职业等市场化岗位</div>
+          </div>
+        </div>
+
         <button class="btn-primary btn-next" onclick="app.finishInput()">查看结果</button>
       </div>
 
@@ -109,51 +132,28 @@
       <div class="result-content">
         <h2 class="result-title" id="result-main-title">您的教育路径预测</h2>
 
-        <!-- 高中预测提示（初中及以下路径） -->
-        <div class="highschool-info" id="highschool-info" style="display:none;"></div>
+        <!-- 路径时间轴 -->
+        <div class="timeline" id="result-timeline"></div>
 
-        <!-- 核心数据卡片 -->
-        <div class="result-cards" id="result-cards-container">
-          <div class="result-card" id="result-card-tier">
-            <div class="result-card-label" id="result-tier-label">预测大学档次</div>
-            <div class="result-card-value" id="result-tier">—</div>
-          </div>
-          <div class="result-card">
-            <div class="result-card-label">毕业起薪（月薪）</div>
-            <div class="result-card-value" id="result-salary">—</div>
-          </div>
-          <div class="result-card">
-            <div class="result-card-label">社会阶层定位</div>
-            <div class="result-card-value" id="result-class">—</div>
-          </div>
-        </div>
+        <!-- 最终结论卡片 -->
+      <div class="final-card" id="final-card" style="display:none;"></div>
 
-        <!-- 备选路径（初中及以下未上高中） -->
-        <div class="alt-paths" id="alt-paths" style="display:none;">
-          <h3 class="section-title">备选发展路径</h3>
-          <div class="alt-path-card" id="alt-path-1"></div>
-          <div class="alt-path-card" id="alt-path-2"></div>
-        </div>
+      <!-- 社会阶层金字塔 -->
+      <div class="pyramid-section" id="pyramid-section" style="display:none;">
+        <h3 class="section-title">社会阶层金字塔</h3>
+        <img id="pyramid-img" class="pyramid-img" src="img/pyramid.jpg" alt="社会阶层金字塔">
+      </div>
 
-        <div class="pyramid-section">
-          <h3 class="section-title">社会阶层金字塔</h3>
-          <img id="pyramid-img" class="pyramid-img" src="img/pyramid.jpg" alt="社会阶层金字塔">
-        </div>
+      <!-- 专业加权 -->
+      <div class="major-bonus-section" id="major-bonus-section" style="display:none;">
+        <h3 class="section-title">专业加权</h3>
+        <p class="major-bonus-text" id="major-bonus-text">—</p>
+      </div>
 
-        <div class="career-section">
-          <h3 class="section-title">典型职业与生活方式</h3>
-          <p class="career-text" id="career-text">—</p>
-        </div>
-
-        <div class="ceiling-section">
-          <h3 class="section-title">奋斗上限（10-15年后）</h3>
-          <p class="ceiling-text" id="ceiling-text">—</p>
-        </div>
-
-        <div class="major-bonus-section" id="major-bonus-section" style="display:none;">
-          <h3 class="section-title">专业加权</h3>
-          <p class="major-bonus-text" id="major-bonus-text">—</p>
-        </div>
+      <!-- 赛道切换提示 -->
+      <div class="track-switch-hint" style="margin-top: 20px; padding: 16px; background: #F3F4F6; border-radius: 12px; text-align: center; font-size: 13px; color: var(--text-secondary);">
+        💡 提示：体制内与体制外的生存状态差异显著，可点击"换个假设"重新选择赛道对比
+      </div>
 
         <div class="result-actions">
           <button class="btn-secondary" onclick="app.changeAssumption()">换个假设</button>
